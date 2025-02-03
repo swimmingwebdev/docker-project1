@@ -8,7 +8,7 @@
 
 ### Data Collection and Analytics System (Daily Expense Tracker)
 ##  System Overview
-#### 1. Enter Data Service
+#### 1. Enter Data Service (App)
 - Languages
   - Frontend: ReactJS with tailwind
   - Backend: Flask
@@ -22,7 +22,7 @@
     4. Payment Method(cash, credit card, debit card)
   - Expenses are stored in MySQL
 
-#### 2. Show Results Service
+#### 2. Show Results Service (App)
 - Languages
   - Frontend: ReactJS with tailwind
   - Backend: NodeJS 
@@ -49,3 +49,23 @@
     3. Highest spending category
     4. Monthly Reports
   - Stores the results in MongoDB
+
+## Test services
+1. Authentication Service (port 5000):
+
+```bash
+cd authentication
+python app.py
+```
+
+2. Enter Data Service
+  - Frontend (port 5173)
+  ```bash
+  cd enter_data/frontend
+  npm run dev
+  ```
+  - Backend(port 5001)
+  ```bash
+    cd enter_data/backend
+    python app.py
+  ``` 

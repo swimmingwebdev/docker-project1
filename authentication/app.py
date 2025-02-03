@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from datetime import datetime, timedelta, timezone
+from flask_cors import CORS
 import jwt
 import os
 from dotenv import load_dotenv
@@ -7,6 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app)
 
 SECRET_KEY = os.getenv('JWT_SECRET_KEY')
 USER_ID = os.getenv('USER_ID')
@@ -66,4 +68,4 @@ def verify():
         }), 401
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)

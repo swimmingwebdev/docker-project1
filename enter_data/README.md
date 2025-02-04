@@ -25,7 +25,7 @@ python app.py
 - log in to Docker
   `docker login`
 
--  Pull and run MySQL from Docker Hub\ 
+-  Pull and run MySQL from Docker Hub
 ```bash
   docker pull swimminwebdev/expense-mysql-server:latest
 

@@ -10,7 +10,7 @@
 ##  System Overview
 #### 1. Enter Data Service (App)
 - Languages
-  - Frontend: ReactJS with tailwind
+  - Frontend: html, Javascript, tailwindCSS
   - Backend: Flask
   - Database: MySQL
 - Features
@@ -24,8 +24,8 @@
 
 #### 2. Show Results Service (App)
 - Languages
-  - Frontend: ReactJS with tailwind
-  - Backend: NodeJS 
+  - Frontend: html, Javascript, tailwindCSS
+  - Backend: Node.js 
 - Features
   - Send credentials to Authentication Service
   - Retrieves analytics from MongoDB

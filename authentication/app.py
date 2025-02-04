@@ -56,6 +56,8 @@ def verify():
         }), 401
     
     try:
+        # Ensure "Bearer" is removed
+        token = token.replace("Bearer ", "").strip()
         # Check if the token is real and hasn't expired
         jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         return jsonify({

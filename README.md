@@ -31,8 +31,6 @@ python app.py
 # It starts on http://localhost:5000
 ```
 
-
-
 ### 2. Enter Data Service (App)
 
 #### Languages
@@ -59,6 +57,17 @@ python app.py
 #### Setup
 
 ```bash
+# Pull and run MySQL from Docker Hub
+docker login
+docker pull swimminwebdev/expense-mysql-server:latest
+docker run -d --name expense-mysql-server -p 3306:3306 swimminwebdev/expense-mysql-server:latest
+
+
+# Verify data in MySQL
+docker exec -it expense-mysql-server mysql -u mysqluser -p
+USE expense_db;
+SELECT * FROM expenses;
+
 cd enter_data/backend
 pip install -r requirements.txt
 python app.py
@@ -66,22 +75,6 @@ python app.py
 
 cd enter_data/frontend
 # recommend run index.html with live server extension
-
-# Pull and run MySQL from Docker Hub
-docker login
-docker pull swimminwebdev/expense-mysql-server:latest
-docker run --name expense-mysql-server \
-  -e MYSQL_ROOT_PASSWORD=Password1234 \
-  -e MYSQL_DATABASE=expense_db \
-  -e MYSQL_USER=mysqluser \
-  -e MYSQL_PASSWORD=Password1 \
-  -p 3306:3306 \
-  -d swimminwebdev/expense-mysql-server:latest
-
-# Verify data in MySQL
-docker exec -it expense-mysql-server mysql -u mysqluser -p
-USE expense_db;
-SELECT * FROM expenses;
 ```
 
 
@@ -111,7 +104,7 @@ SELECT * FROM expenses;
 # Pull and run MongoDB from Docker Hub
 docker login
 docker pull swimminwebdev/expense-mongo-server:latest 
-docker run --name expense-mongo-server \ -p 27017:27017 \ -d swimminwebdev/expense-mongo-server:latest
+docker run --name expense-mongo-server -p 27017:27017 -d swimminwebdev/expense-mongo-server:latest
 
 # Verify data in MongoDB
 docker exec -it expense-mongo-server mongosh

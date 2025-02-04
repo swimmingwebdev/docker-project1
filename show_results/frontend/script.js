@@ -111,3 +111,29 @@ window.onload = async function () {
         await fetchAnalytics(token);
     }
 };
+
+// Update analytics when "Update Results" button is clicked
+document.getElementById("update-results").addEventListener("click", async function () {
+    const token = localStorage.getItem("auth_token");
+    if (!token) {
+        alert("Please log in first.");
+        return;
+    }
+
+    try {
+        const response = await fetch("http://localhost:5003/update-analytics", {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${token}` },
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to update analytics.");
+        }
+
+        alert("Analytics updated successfully!");
+        await fetchAnalytics(token);
+    } catch (error) {
+        console.error("Error updating analytics:", error);
+        alert("Error updating analytics.");
+    }
+});

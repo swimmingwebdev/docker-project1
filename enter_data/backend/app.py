@@ -32,6 +32,7 @@ def initialize_db():
         )
     """)
     conn.commit()
+    print("Table expenses created successfully. (or already exists.)")
     cursor.close()
     conn.close()
 

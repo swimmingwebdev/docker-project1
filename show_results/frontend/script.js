@@ -63,25 +63,25 @@ async function fetchAnalytics(token) {
         // Remove brackets
         document.getElementById("average-spending").innerHTML = 
             Object.entries(data?.average_spending_per_category || {})
-                .map(([category, amount]) => `${category}: $${amount}`)
+                .map(([category, amount]) => `${category}: $${parseFloat(amount).toFixed(2)}`)
                 .join("<br>");
         document.getElementById("highest-category").textContent = `${data?.highest_spending_category || "N/A"}`;
-        document.getElementById("monthly-report").textContent = 
-            Object.entries(data.monthly_report)
-                .map(([month, amount]) => {
-                    // Extract only the month part
-                    let [year, monthNumber] = month.split("-");
-                    
-                    // Convert month number to name
-                    const monthNames = [
-                        "January", "February", "March", "April", "May", "June",
-                        "July", "August", "September", "October", "November", "December"
-                    ];
-                    
-                    return `$${amount} in ${monthNames[parseInt(monthNumber, 10) - 1]}`;
-                })
-                .join(", "); 
+        const monthlyEntries = Object.entries(data.monthly_report);
+        if (monthlyEntries.length > 0) {
+            const [latestMonth, latestAmount] = monthlyEntries.sort().reverse()[0]; // Get the latest month
+            let [year, monthNumber] = latestMonth.split("-");
+            
+            const monthNames = [
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            ];
 
+            document.getElementById("monthly-report").textContent = 
+                `$${latestAmount} in ${monthNames[parseInt(monthNumber, 10) - 1]}`;
+        } else {
+            document.getElementById("monthly-report").textContent = "No data available";
+        }
+        
         // Show analytics data and hide login message
         document.getElementById("login-message").classList.add("hidden");
         document.getElementById("analytics-data").classList.remove("hidden");

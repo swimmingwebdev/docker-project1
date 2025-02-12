@@ -22,6 +22,22 @@ async function connectMongoDB() {
         await mongoClient.connect();
         db = mongoClient.db("analytics_db");
         console.log("Connected to MongoDB");
+
+        const collection = db.collection("analytics");
+        const docCount = await collection.countDocuments();
+        
+        if (docCount === 0) {
+            await collection.insertOne({
+                total_spending: 0,
+                average_spending_per_category: {},
+                highest_spending_category: "",
+                monthly_report: {}
+            });
+            console.log("Initialized analytics collection");
+        } else {
+            console.log("Analytics collection already exists.");
+        }
+
     } catch (error) {
         console.error("MongoDB Connection Failed:", error);
         process.exit(1); // Stop server if MongoDB connection fails

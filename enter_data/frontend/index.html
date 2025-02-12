@@ -1,30 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enter Expense</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100">
-    <nav class="bg-blue-500 p-4 text-white flex justify-between">
+<body class="bg-gray-900 text-white">
+    <nav class="bg-gray-800 p-4 text-white flex justify-between">
         <h1 class="text-xl font-bold">Expense Tracker</h1>
-        <form id="login-form" class="flex space-x-2">
-            <input type="text" id="username" placeholder="Username" class="p-2 rounded text-black" required>
-            <input type="password" id="password" placeholder="Password" class="p-2 rounded text-black" required>
-            <button type="submit" id="login-button" class="bg-white text-blue-500 px-4 py-2 rounded">Login</button>
-        </form>
+        <div class="flex space-x-2">
+            <form id="login-form" class="flex space-x-2">
+                <input type="text" id="username" placeholder="Username" class="p-2 rounded bg-gray-700 text-white" required>
+                <input type="password" id="password" placeholder="Password" class="p-2 rounded bg-gray-700 text-white" required>
+            </form>
+            <button id="login-button" class="bg-blue-500 px-4 py-2 rounded">Login</button>
+        </div>
     </nav>
     
+    
     <div class="flex justify-center items-center h-screen">
-        <div class="bg-white p-6 rounded-lg shadow-md w-96">
+        <div class="bg-gray-800 p-6 rounded-lg shadow-md w-96">
             <h2 class="text-xl font-bold mb-4">Enter Expense</h2>
-            <p id="welcome-message" class="text-sm font-semibold text-blue-700 mb-3"></p>
+            <p id="welcome-message" class="text-sm font-semibold text-blue-400 mb-3"></p>
             <form id="expense-form" class="space-y-4">
-                <input type="date" id="date" class="w-full p-2 border rounded" required>
-                <input type="number" id="amount" placeholder="Amount" class="w-full p-2 border rounded" required>
+                <input type="date" id="date" class="w-full p-2 border rounded bg-gray-700 text-white border-gray-600" required>
+                <input type="number" id="amount" placeholder="Amount" class="w-full p-2 border rounded  bg-gray-700 text-white border-gray-600" required>
                 
-                <select id="category" class="w-full p-2 border rounded" required>
+                <select id="category" class="w-full p-2 border rounded bg-gray-700 text-white border-gray-600" required>
                     <option value="">Select Category</option>
                     <option value="food">Food</option>
                     <option value="transport">Transport</option>
@@ -33,7 +36,7 @@
                     <option value="other">Other</option>
                 </select>
                 
-                <select id="payment-method" class="w-full p-2 border rounded" required>
+                <select id="payment-method" class="w-full p-2 border rounded bg-gray-700 text-white border-gray-600" required>
                     <option value="">Select Payment Method</option>
                     <option value="cash">Cash</option>
                     <option value="credit card">Credit Card</option>
@@ -43,7 +46,7 @@
                 
                 <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded">Submit</button>
             </form>
-            <p id="message" class="mt-4 text-center text-green-500"></p>
+            <p id="message" class="mt-4 text-center text-green-400" style="display: none;"></p>
         </div>
     </div>
     

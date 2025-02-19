@@ -4,7 +4,7 @@ const dotenv = require("dotenv");
 const { MongoClient } = require("mongodb");
 const axios = require("axios");
 
-require("dotenv").config({ path: "../../.env" });
+dotenv.config({ path: "../../.env" });
 console.log("MongoDB URI:", process.env.MONGO_URI || "Check .env file");
 
 const app = express();
@@ -62,7 +62,7 @@ async function authenticate(req, res, next) {
     }
 
     try {
-        const response = await axios.get("http://localhost:5000/auth/verify", {
+        const response = await axios.get("http://authentication_service:5000/auth/verify", {
             headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -93,6 +93,28 @@ app.get("/analytics", authenticate, async (req, res) => {
     } catch (error) {
         console.error("Error fetching analytics:", error);
         res.status(500).json({ message: "Error fetching analytics" });
+    }
+});
+
+
+// Trigger Analytics Update
+app.post("/update-analytics", authenticate, async (req, res) => {
+    try {
+
+        const response = await axios.post("http://analytics_service:5003/update-analytics", {}, {
+            headers: { Authorization: req.headers.authorization },
+        });
+
+        if (response.status === 200) {
+            console.log("Analytics updated successfully.");
+            res.json({ message: "Analytics updated successfully" });
+        } else {
+            console.error("Failed to update analytics:", response.data);
+            res.status(500).json({ message: "Failed to update analytics" });
+        }
+    } catch (error) {
+        console.error("Error updating analytics:", error.message);
+        res.status(500).json({ message: "Error updating analytics" });
     }
 });
 

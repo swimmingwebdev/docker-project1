@@ -9,6 +9,9 @@ services:
     environment:
       - FLASK_APP=app.py
       - FLASK_ENV=development
+      - USER_ID=${USER_ID}               
+      - USER_PASSWORD=${USER_PASSWORD}    
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
     volumes:
       - ./authentication:/app
     networks:
@@ -78,6 +81,7 @@ services:
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MONGO_URI=${MONGO_URI}
     volumes:
       - ./analytics:/app
     depends_on:

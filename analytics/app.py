@@ -11,13 +11,14 @@ app = Flask(__name__)
 CORS(app)
 
 # Connect to MySQL
-mysql_conn = pymysql.connect(
-    host=os.getenv("MYSQL_HOST"),
-    user=os.getenv("MYSQL_USER"),
-    password=os.getenv("MYSQL_PASSWORD"),
-    database=os.getenv("MYSQL_DATABASE"),
-    cursorclass=pymysql.cursors.DictCursor
-)
+def get_mysql_connection():
+    return pymysql.connect(
+        host=os.getenv("MYSQL_HOST"),
+        user=os.getenv("MYSQL_USER"),
+        password=os.getenv("MYSQL_PASSWORD"),
+        database=os.getenv("MYSQL_DATABASE"),
+        cursorclass=pymysql.cursors.DictCursor
+    )
 
 # Connect to MongoDB
 mongo_client = pymongo.MongoClient(os.getenv("MONGO_URI"))
@@ -26,25 +27,21 @@ analytics_collection = mongo_db["analytics"]
 
 def update_analytics():
     try:
-        with mysql_conn.cursor() as cursor:
-            # Calculate total spending
+        with get_mysql_connection().cursor() as cursor:
+
             cursor.execute("SELECT SUM(amount) as total_spending FROM expenses")
             total_spending = float(cursor.fetchone()["total_spending"] or 0)
 
-            # Calculate average spending per category
             cursor.execute("SELECT category, AVG(amount) as avg_spending FROM expenses GROUP BY category")
             avg_spending_per_category = {row["category"]: float(row["avg_spending"]) for row in cursor.fetchall()}
 
-            # Find the category with the highest spending
             cursor.execute("SELECT category, SUM(amount) as total FROM expenses GROUP BY category ORDER BY total DESC LIMIT 1")
             highest_spending_category = cursor.fetchone()
             highest_category = highest_spending_category["category"] if highest_spending_category else "None"
 
-            # Generate monthly spending report
             cursor.execute("SELECT DATE_FORMAT(date, '%Y-%m') as month, SUM(amount) as total FROM expenses GROUP BY month")
             monthly_report = {row["month"]: float(row["total"]) for row in cursor.fetchall()}
 
-            # Save to MongoDB
             analytics_data = {
                 "total_spending": total_spending,
                 "average_spending_per_category": avg_spending_per_category,
@@ -67,7 +64,7 @@ def update_analytics_route():
 @app.route("/analytics", methods=["GET"])
 def get_analytics():
     try:
-        with mysql_conn.cursor() as cursor:
+        with get_mysql_connection().cursor() as cursor:
 
             cursor.execute("SELECT SUM(amount) as total_spending FROM expenses")
             total_spending = float(cursor.fetchone()["total_spending"] or 0)

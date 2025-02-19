@@ -1,0 +1,119 @@
+version: '3.8'
+
+services:
+  authentication:
+    build:
+      context: ./authentication
+    container_name: authentication_service
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+    volumes:
+      - ./authentication:/app
+    networks:
+      - expense_network
+
+  enter_data_backend:
+    build:
+      context: ./enter_data/backend
+    container_name: enter_data_service
+    ports:
+      - "5001:5001"
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+    volumes:
+      - ./enter_data/backend:/app
+    depends_on:
+      - mysql
+    networks:
+      - expense_network
+
+  enter_data_frontend:
+    image: nginx:alpine
+    container_name: enter_data_frontend
+    volumes:
+      - ./enter_data/frontend:/usr/share/nginx/html
+    ports:
+      - "8080:80"
+    networks:
+      - expense_network
+
+  mysql:
+    image: swimminwebdev/expense-mysql-server:latest
+    container_name: expense-mysql-server
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: expense_db
+      MYSQL_USER: mysqluser
+      MYSQL_PASSWORD: mysqlpassword
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - expense_network
+
+  analytics:
+    build:
+      context: ./analytics
+    container_name: analytics_service
+    ports:
+      - "5003:5003"
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+    volumes:
+      - ./analytics:/app
+    depends_on:
+      - mysql
+      - mongodb
+    networks:
+      - expense_network
+
+  mongodb:
+    image: swimminwebdev/expense-mongo-server:latest
+    container_name: expense-mongo-server
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: analytics_db
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - expense_network
+
+  show_results_backend:
+    build:
+      context: ./show_results/backend
+    container_name: show_results_service
+    ports:
+      - "5002:5002"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./show_results/backend:/app
+    depends_on:
+      - mongodb
+    networks:
+      - expense_network
+
+  show_results_frontend:
+    image: nginx:alpine
+    container_name: show_results_frontend
+    volumes:
+      - ./show_results/frontend:/usr/share/nginx/html
+    ports:
+      - "8081:80"
+    networks:
+      - expense_network
+
+volumes:
+  mysql_data:
+  mongodb_data:
+
+networks:
+  expense_network:
+    driver: bridge

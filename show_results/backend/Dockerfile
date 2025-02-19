@@ -7,7 +7,7 @@ WORKDIR /app
 # Copy package.json and package-lock.json first (for efficient caching)
 COPY package*.json ./
 
-# Install dependencies
+# Clean install dependencies
 RUN npm install
 
 # Copy the rest of the backend files

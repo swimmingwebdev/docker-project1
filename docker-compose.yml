@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   authentication:
@@ -24,10 +23,15 @@ services:
     environment:
       - FLASK_APP=app.py
       - FLASK_ENV=development
+      - MYSQL_HOST=${MYSQL_HOST}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
     volumes:
       - ./enter_data/backend:/app
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     networks:
       - expense_network
 
@@ -47,14 +51,19 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: expense_db
-      MYSQL_USER: mysqluser
-      MYSQL_PASSWORD: mysqlpassword
+      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
       - expense_network
+    healthcheck:   # Healthcheck configuration
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   analytics:
     build:
@@ -65,13 +74,20 @@ services:
     environment:
       - FLASK_APP=app.py
       - FLASK_ENV=development
+      - MYSQL_HOST=${MYSQL_HOST}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
     volumes:
       - ./analytics:/app
     depends_on:
-      - mysql
-      - mongodb
+      mysql:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
     networks:
       - expense_network
+
 
   mongodb:
     image: swimminwebdev/expense-mongo-server:latest
@@ -84,6 +100,11 @@ services:
       - mongodb_data:/data/db
     networks:
       - expense_network
+    healthcheck:    # Healthcheck configuration
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   show_results_backend:
     build:
@@ -93,10 +114,13 @@ services:
       - "5002:5002"
     environment:
       - NODE_ENV=development
+      - MONGO_URI=${MONGO_URI}
     volumes:
       - ./show_results/backend:/app
+      - /app/node_modules # avoid overriding node_modules
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_healthy
     networks:
       - expense_network
 

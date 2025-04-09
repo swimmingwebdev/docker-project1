@@ -3,8 +3,46 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("register-button").addEventListener("click", handleRegister);
 });
 
-// Register 
+// Show/Hide UI elements based on login status
+function updateLoginButton() {
+    const loginForm = document.getElementById("login-form");
+    const loginButton = document.getElementById("login-button");
+    const showResultsLink = document.getElementById("show-results-link");
+    const registerButton = document.getElementById("register-button");
+    const token = localStorage.getItem("auth_token");
+    const isLoggedIn = !!token;
 
+    if (token) {
+        showResultsLink.href = `http://localhost:8081/?token=${token}`;
+    }
+
+    loginButton.removeEventListener("click", handleLogin);
+    loginButton.removeEventListener("click", handleLogout);
+
+    if (isLoggedIn) {
+        loginButton.textContent = "Logout";
+        loginButton.classList.remove("bg-blue-500");
+        loginButton.classList.add("bg-red-500");
+        loginForm.style.display = "none";
+
+        showResultsLink.classList.remove("hidden");
+        registerButton.classList.add("hidden");
+
+        loginButton.addEventListener("click", handleLogout);
+    } else {
+        loginButton.textContent = "Login";
+        loginButton.classList.add("bg-blue-500");
+        loginButton.classList.remove("bg-red-500");
+
+        loginForm.style.display = "flex";
+        showResultsLink.classList.add("hidden");
+        registerButton.classList.remove("hidden");
+
+        loginButton.addEventListener("click", handleLogin);
+    }
+}
+
+// Handle Registration
 async function handleRegister(event) {
     event.preventDefault();
 
@@ -38,6 +76,7 @@ async function handleRegister(event) {
     }
 }
 
+// Handle Login
 async function handleLogin(event) {
     event.preventDefault();
     
@@ -67,6 +106,7 @@ async function handleLogin(event) {
         localStorage.setItem('auth_token', authData.token);
         localStorage.setItem('username', username);
 
+        // Optional: verify token again (already verified by backend)
         const verifyResponse = await fetch("http://localhost:5000/auth/verify", {
             method: "GET",
             headers: { "Authorization": `Bearer ${authData.token}` },
@@ -87,8 +127,9 @@ async function handleLogin(event) {
         console.error("Login error:", error);
         showAlert("Login failed. Try again later.", "error");
     }
-};
+}
 
+// Handle Expense Submission
 document.getElementById('expense-form')?.addEventListener('submit', async function (event) {
     event.preventDefault();
     
@@ -122,32 +163,6 @@ document.getElementById('expense-form')?.addEventListener('submit', async functi
     }
 });
 
-// Update login/logout button
-function updateLoginButton() {
-    const loginForm = document.getElementById("login-form");
-    const loginButton = document.getElementById("login-button");
-    const isLoggedIn = localStorage.getItem("auth_token");
-
-    loginButton.removeEventListener("click", handleLogin);
-    loginButton.removeEventListener("click", handleLogout);
-
-    if (isLoggedIn) {
-        loginButton.textContent = "Logout";
-        loginButton.classList.remove("bg-blue-500");
-        loginButton.classList.add("bg-red-500");
-        loginForm.style.display = "none";
-
-        loginButton.addEventListener("click", handleLogout);
-    } else {
-        loginButton.textContent = "Login";
-        loginButton.classList.add("bg-blue-500");
-        loginButton.classList.remove("bg-red-500");
-
-        loginForm.style.display = "flex";
-        loginButton.addEventListener("click", handleLogin);
-    }
-}
-
 // Handle Logout
 function handleLogout() {
     localStorage.clear(); 
@@ -162,23 +177,29 @@ function handleLogout() {
     }, 500);
 }
 
-
-// Load stored username on page load
+// Load saved login info on page load
 window.onload = async function () {
-    const token = localStorage.getItem("auth_token");
-    const username = localStorage.getItem("username");
+    const params = new URLSearchParams(window.location.search);
+    const tokenFromURL = params.get('token');
+    const username = localStorage.getItem("username"); 
+
+    if (tokenFromURL) {
+        localStorage.setItem("auth_token", tokenFromURL);
+    }
 
     if (username) {
         document.getElementById("welcome-message").textContent = `Hello ${username}`;
-        updateLoginButton();
     }
 
-    if (token) {
-        await fetchAnalytics(token);
-        document.getElementById("login-form").style.display = "none";
+    updateLoginButton();
+
+    // Remove the token from the URL
+    if (window.location.search.includes("token")) {
+    window.history.replaceState({}, document.title, "/");
     }
 };
 
+// Show alert message
 function showAlert(message, type) {
     const alertBox = document.createElement("div");
     alertBox.textContent = message;

@@ -1,8 +1,9 @@
 
 services:
   authentication:
-    build:
-      context: ./authentication
+    image: swimminwebdev/authentication-service:latest
+    # build:
+    #   context: ./authentication
     container_name: authentication_service
     ports:
       - "5000:5000"
@@ -18,8 +19,9 @@ services:
       - expense_network
 
   enter_data_backend:
-    build:
-      context: ./enter_data/backend
+    image: swimminwebdev/enterdata-backend:latest
+    # build:
+    #   context: ./enter_data/backend
     container_name: enter_data_service
     ports:
       - "5001:5001"
@@ -39,7 +41,7 @@ services:
       - expense_network
 
   enter_data_frontend:
-    image: nginx:alpine
+    image: swimminwebdev/enterdata-frontend:latest
     container_name: enter_data_frontend
     volumes:
       - ./enter_data/frontend:/usr/share/nginx/html
@@ -69,9 +71,10 @@ services:
       retries: 5
 
   analytics:
-    build:
-      context: ./analytics
-    container_name: analytics_service
+    image: swimminwebdev/analytics-service:latest
+    # build:
+    #   context: ./analytics
+    # container_name: analytics_service
     ports:
       - "5003:5003"
     environment:
@@ -111,8 +114,9 @@ services:
       retries: 5
 
   show_results_backend:
-    build:
-      context: ./show_results/backend
+    image: swimminwebdev/showresults-backend:latest
+    # build:
+    #   context: ./show_results/backend
     container_name: show_results_service
     ports:
       - "5002:5002"
@@ -121,7 +125,7 @@ services:
       - MONGO_URI=mongodb://expense-mongo-server:27017/analytics_db
     volumes:
       - ./show_results/backend:/app
-      - /app/node_modules # avoid overriding node_modules
+      # - /app/node_modules # avoid overriding node_modules
     depends_on:
       mongodb:
         condition: service_healthy
@@ -129,7 +133,7 @@ services:
       - expense_network
 
   show_results_frontend:
-    image: nginx:alpine
+    image: swimminwebdev/showresults-frontend:latest
     container_name: show_results_frontend
     volumes:
       - ./show_results/frontend:/usr/share/nginx/html

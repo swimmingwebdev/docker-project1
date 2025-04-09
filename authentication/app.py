@@ -11,8 +11,26 @@ app = Flask(__name__)
 CORS(app)
 
 SECRET_KEY = os.getenv('JWT_SECRET_KEY')
-USER_ID = os.getenv('USER_ID')
-USER_PASSWORD = os.getenv('USER_PASSWORD')
+# USER_ID = os.getenv('USER_ID')
+# USER_PASSWORD = os.getenv('USER_PASSWORD')
+
+registered_users = {}
+
+# Register new user
+@app.route('/auth/register', methods=['POST'])
+def register():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+
+    if not username or not password:
+        return jsonify({'message': 'Username and password required'}), 400
+
+    if username in registered_users:
+        return jsonify({'message': 'User already exists'}), 409
+
+    registered_users[username] = password
+    return jsonify({'message': 'User registered successfully'}), 201
 
 #  when user tries to log in
 @app.route('/auth/login', methods=['POST'])
@@ -26,7 +44,7 @@ def login():
             'message': 'Please provide username and password'
         }), 401
     
-    if username == USER_ID and password == USER_PASSWORD:
+    if username in registered_users and registered_users[username] == password:
         # Create token that expires in 24 hours
         token = jwt.encode({
             'user': username,

@@ -9,9 +9,9 @@ services:
     environment:
       - FLASK_APP=app.py
       - FLASK_ENV=development
-      - USER_ID=${USER_ID}               
-      - USER_PASSWORD=${USER_PASSWORD}    
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - USER_ID=myexpense       
+      - USER_PASSWORD=Password1234 
+      - JWT_SECRET_KEY=my-super-secret-key
     volumes:
       - ./authentication:/app
     networks:
@@ -26,10 +26,10 @@ services:
     environment:
       - FLASK_APP=app.py
       - FLASK_ENV=development
-      - MYSQL_HOST=${MYSQL_HOST}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_HOST=expense-mysql-server
+      - MYSQL_USER=mysqluser
+      - MYSQL_PASSWORD=Password1
+      - MYSQL_DATABASE=expense_db
     volumes:
       - ./enter_data/backend:/app
     depends_on:
@@ -54,10 +54,10 @@ services:
     ports:
       - "3306:3306"
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_ROOT_PASSWORD=Password1
+      - MYSQL_USER=mysqluser
+      - MYSQL_PASSWORD=Password1
+      - MYSQL_DATABASE=expense_db
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
@@ -77,11 +77,11 @@ services:
     environment:
       - FLASK_APP=app.py
       - FLASK_ENV=development
-      - MYSQL_HOST=${MYSQL_HOST}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MONGO_URI=${MONGO_URI}
+      - MYSQL_HOST=expense-mysql-server
+      - MYSQL_USER=mysqluser
+      - MYSQL_PASSWORD=Password1
+      - MYSQL_DATABASE=expense_db
+      - MONGO_URI=mongodb://expense-mongo-server:27017/analytics_db
     volumes:
       - ./analytics:/app
     depends_on:
@@ -118,7 +118,7 @@ services:
       - "5002:5002"
     environment:
       - NODE_ENV=development
-      - MONGO_URI=${MONGO_URI}
+      - MONGO_URI=mongodb://expense-mongo-server:27017/analytics_db
     volumes:
       - ./show_results/backend:/app
       - /app/node_modules # avoid overriding node_modules

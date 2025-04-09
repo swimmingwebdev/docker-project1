@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: authentication
 spec:
-  replicas: 2  # Starting with 2 replicas
+  replicas: 2 
   selector:
     matchLabels:
       app: authentication
@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: authentication
-        image: ${DOCKER_REGISTRY}/expense-authentication:latest
+        image: swimminwebdev/authentication-service:latest
         ports:
         - containerPort: 5000
         env:
@@ -61,7 +61,7 @@ spec:
     spec:
       containers:
       - name: enter-data-backend
-        image: ${DOCKER_REGISTRY}/expense-enter-data-backend:latest
+        image: swimminwebdev/enterdata-backend:latest
         ports:
         - containerPort: 5001
         env:
@@ -110,7 +110,7 @@ spec:
     spec:
       containers:
       - name: enter-data-frontend
-        image: nginx:alpine
+        image: swimminwebdev/enterdata-frontend:latest
         ports:
         - containerPort: 80
         volumeMounts:
@@ -133,7 +133,7 @@ kind: Deployment
 metadata:
   name: mysql
 spec:
-  replicas: 1  # Database typically doesn't scale horizontally without special setup
+  replicas: 1  
   selector:
     matchLabels:
       app: mysql
@@ -199,7 +199,7 @@ spec:
     spec:
       containers:
       - name: analytics
-        image: ${DOCKER_REGISTRY}/expense-analytics:latest
+        image: swimminwebdev/analytics-service:latest
         ports:
         - containerPort: 5003
         env:
@@ -242,7 +242,7 @@ kind: Deployment
 metadata:
   name: mongodb
 spec:
-  replicas: 1  # Database typically doesn't scale horizontally without special setup
+  replicas: 1
   selector:
     matchLabels:
       app: mongodb
@@ -290,7 +290,7 @@ spec:
     spec:
       containers:
       - name: show-results-backend
-        image: ${DOCKER_REGISTRY}/expense-show-results-backend:latest
+        image: swimminwebdev/showresults-backend:latest
         ports:
         - containerPort: 5002
         env:
@@ -325,7 +325,7 @@ spec:
     spec:
       containers:
       - name: show-results-frontend
-        image: nginx:alpine
+        image: swimminwebdev/showresults-frontend:latest
         ports:
         - containerPort: 80
         volumeMounts:

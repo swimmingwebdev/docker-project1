@@ -22,21 +22,21 @@ spec:
           value: "app.py"
         - name: FLASK_ENV
           value: "production"
-        - name: USER_ID
+        - name: myexpense
           valueFrom:
             secretKeyRef:
               name: expense-secrets
-              key: USER_ID
-        - name: USER_PASSWORD
+              key: myexpense
+        - name: Password1234
           valueFrom:
             secretKeyRef:
               name: expense-secrets
-              key: USER_PASSWORD
-        - name: JWT_SECRET_KEY
+              key: Password1234
+        - name: my-super-secret-key
           valueFrom:
             secretKeyRef:
               name: expense-secrets
-              key: JWT_SECRET_KEY
+              key: my-super-secret-key
         resources:
           requests:
             cpu: "100m"
@@ -69,23 +69,23 @@ spec:
           value: "app.py"
         - name: FLASK_ENV
           value: "production"
-        - name: MYSQL_HOST
+        - name: expense-mysql-server
           value: "mysql-service"
-        - name: MYSQL_USER
+        - name: mysqluser
           valueFrom:
             secretKeyRef:
               name: expense-secrets
-              key: MYSQL_USER
-        - name: MYSQL_PASSWORD
+              key: mysqluser
+        - name: Password1
           valueFrom:
             secretKeyRef:
               name: expense-secrets
-              key: MYSQL_PASSWORD
-        - name: MYSQL_DATABASE
+              key: Password1
+        - name: expense_db
           valueFrom:
             secretKeyRef:
               name: expense-secrets
-              key: MYSQL_DATABASE
+              key: expense_db
         resources:
           requests:
             cpu: "100m"
@@ -148,26 +148,26 @@ spec:
         ports:
         - containerPort: 3306
         env:
-        - name: MYSQL_ROOT_PASSWORD
+        - name: Password1
           valueFrom:
             secretKeyRef:
               name: expense-secrets
-              key: MYSQL_PASSWORD
-        - name: MYSQL_USER
+              key: Password1
+        - name: mysqluser
           valueFrom:
             secretKeyRef:
               name: expense-secrets
-              key: MYSQL_USER
-        - name: MYSQL_PASSWORD
+              key: mysqluser
+        - name: Password1
           valueFrom:
             secretKeyRef:
               name: expense-secrets
-              key: MYSQL_PASSWORD
-        - name: MYSQL_DATABASE
+              key: Password1
+        - name: expense_db
           valueFrom:
             secretKeyRef:
               name: expense-secrets
-              key: MYSQL_DATABASE
+              key: expense_db
         volumeMounts:
         - name: mysql-data
           mountPath: /var/lib/mysql
@@ -207,28 +207,28 @@ spec:
           value: "app.py"
         - name: FLASK_ENV
           value: "production"
-        - name: MYSQL_HOST
+        - name: expense-mysql-server
           value: "mysql-service"
-        - name: MYSQL_USER
+        - name: mysqluser
           valueFrom:
             secretKeyRef:
               name: expense-secrets
-              key: MYSQL_USER
-        - name: MYSQL_PASSWORD
+              key: mysqluser
+        - name: Password1
           valueFrom:
             secretKeyRef:
               name: expense-secrets
-              key: MYSQL_PASSWORD
-        - name: MYSQL_DATABASE
+              key: Password1
+        - name: expense_db
           valueFrom:
             secretKeyRef:
               name: expense-secrets
-              key: MYSQL_DATABASE
+              key: expense_db
         - name: MONGO_URI
           valueFrom:
             secretKeyRef:
               name: expense-secrets
-              key: MONGO_URI
+              key: mongodb://expense-mongo-server:27017/analytics_db
         resources:
           requests:
             cpu: "100m"
@@ -300,7 +300,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: expense-secrets
-              key: MONGO_URI
+              key: mongodb://expense-mongo-server:27017/analytics_db
         resources:
           requests:
             cpu: "100m"

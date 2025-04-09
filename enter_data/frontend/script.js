@@ -1,6 +1,42 @@
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("login-button").addEventListener("click", handleLogin);
+    document.getElementById("register-button").addEventListener("click", handleRegister);
 });
+
+// Register 
+
+async function handleRegister(event) {
+    event.preventDefault();
+
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    if (!username || !password) {
+        showAlert("Please enter both username and password to register.", "error");
+        return;
+    }
+
+    try {
+        const registerResponse = await fetch('http://localhost:5000/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+
+        const registerData = await registerResponse.json();
+
+        if (!registerResponse.ok) {
+            showAlert(registerData.message || "Registration failed.", "error");
+            return;
+        }
+
+        showAlert("Registration successful! Please log in.", "success");
+
+    } catch (error) {
+        console.error("Registration error:", error);
+        showAlert("Registration failed. Try again later.", "error");
+    }
+}
 
 async function handleLogin(event) {
     event.preventDefault();

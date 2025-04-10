@@ -33,6 +33,7 @@ spec:
     - protocol: TCP
       port: 8080
       targetPort: 80
+  type: LoadBalancer
 ---
 apiVersion: v1
 kind: Service
@@ -93,3 +94,4 @@ spec:
     - protocol: TCP
       port: 8081
       targetPort: 80
+  type: LoadBalancer

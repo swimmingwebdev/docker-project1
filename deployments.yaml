@@ -1,9 +1,10 @@
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: authentication
 spec:
-  replicas: 2 
+  replicas: 2
   selector:
     matchLabels:
       app: authentication
@@ -22,21 +23,21 @@ spec:
           value: "app.py"
         - name: FLASK_ENV
           value: "production"
-        - name: myexpense
+        - name: USER_ID
           valueFrom:
             secretKeyRef:
               name: expense-secrets
-              key: myexpense
-        - name: Password1234
+              key: USER_ID
+        - name: USER_PASSWORD
           valueFrom:
             secretKeyRef:
               name: expense-secrets
-              key: Password1234
-        - name: my-super-secret-key
+              key: USER_PASSWORD
+        - name: JWT_SECRET_KEY
           valueFrom:
             secretKeyRef:
               name: expense-secrets
-              key: my-super-secret-key
+              key: JWT_SECRET_KEY
         resources:
           requests:
             cpu: "100m"
@@ -69,23 +70,23 @@ spec:
           value: "app.py"
         - name: FLASK_ENV
           value: "production"
-        - name: expense-mysql-server
+        - name: MYSQL_HOST
           value: "mysql-service"
-        - name: mysqluser
+        - name: MYSQL_USER
           valueFrom:
             secretKeyRef:
               name: expense-secrets
-              key: mysqluser
-        - name: Password1
+              key: MYSQL_USER
+        - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
               name: expense-secrets
-              key: Password1
-        - name: expense_db
+              key: MYSQL_PASSWORD
+        - name: MYSQL_DATABASE
           valueFrom:
             secretKeyRef:
               name: expense-secrets
-              key: expense_db
+              key: MYSQL_DATABASE
         resources:
           requests:
             cpu: "100m"
@@ -113,9 +114,6 @@ spec:
         image: swimminwebdev/enterdata-frontend:latest
         ports:
         - containerPort: 80
-        volumeMounts:
-        - name: enter-data-frontend-files
-          mountPath: /usr/share/nginx/html
         resources:
           requests:
             cpu: "50m"
@@ -123,17 +121,13 @@ spec:
           limits:
             cpu: "100m"
             memory: "128Mi"
-      volumes:
-      - name: enter-data-frontend-files
-        configMap:
-          name: enter-data-frontend-files
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql
 spec:
-  replicas: 1  
+  replicas: 1
   selector:
     matchLabels:
       app: mysql
@@ -148,26 +142,21 @@ spec:
         ports:
         - containerPort: 3306
         env:
-        - name: Password1
+        - name: MYSQL_USER
           valueFrom:
             secretKeyRef:
               name: expense-secrets
-              key: Password1
-        - name: mysqluser
+              key: MYSQL_USER
+        - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
               name: expense-secrets
-              key: mysqluser
-        - name: Password1
+              key: MYSQL_PASSWORD
+        - name: MYSQL_DATABASE
           valueFrom:
             secretKeyRef:
               name: expense-secrets
-              key: Password1
-        - name: expense_db
-          valueFrom:
-            secretKeyRef:
-              name: expense-secrets
-              key: expense_db
+              key: MYSQL_DATABASE
         volumeMounts:
         - name: mysql-data
           mountPath: /var/lib/mysql
@@ -207,28 +196,28 @@ spec:
           value: "app.py"
         - name: FLASK_ENV
           value: "production"
-        - name: expense-mysql-server
+        - name: MYSQL_HOST
           value: "mysql-service"
-        - name: mysqluser
+        - name: MYSQL_USER
           valueFrom:
             secretKeyRef:
               name: expense-secrets
-              key: mysqluser
-        - name: Password1
+              key: MYSQL_USER
+        - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
               name: expense-secrets
-              key: Password1
-        - name: expense_db
+              key: MYSQL_PASSWORD
+        - name: MYSQL_DATABASE
           valueFrom:
             secretKeyRef:
               name: expense-secrets
-              key: expense_db
+              key: MYSQL_DATABASE
         - name: MONGO_URI
           valueFrom:
             secretKeyRef:
               name: expense-secrets
-              key: mongodb://expense-mongo-server:27017/analytics_db
+              key: MONGO_URI
         resources:
           requests:
             cpu: "100m"
@@ -236,6 +225,7 @@ spec:
           limits:
             cpu: "200m"
             memory: "256Mi"
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -300,7 +290,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: expense-secrets
-              key: mongodb://expense-mongo-server:27017/analytics_db
+              key: MONGO_URI
         resources:
           requests:
             cpu: "100m"
@@ -328,9 +318,6 @@ spec:
         image: swimminwebdev/showresults-frontend:latest
         ports:
         - containerPort: 80
-        volumeMounts:
-        - name: show-results-frontend-files
-          mountPath: /usr/share/nginx/html
         resources:
           requests:
             cpu: "50m"
@@ -338,7 +325,3 @@ spec:
           limits:
             cpu: "100m"
             memory: "128Mi"
-      volumes:
-      - name: show-results-frontend-files
-        configMap:
-          name: show-results-frontend-files

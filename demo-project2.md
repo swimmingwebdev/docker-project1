@@ -37,7 +37,7 @@ kubectl get svc
 
 ```
 
-### 5. To Test Autoscaling
+### 5. To Test Autoscaling simply
 ```sh
 # Use kubectl run to generate load
 kubectl run -i --tty load-generator --image=busybox /bin/sh
@@ -59,3 +59,26 @@ kubectl get pods
 kubectl describe pvc mysql-pvc
 kubectl logs deploy/show-results-backend
 ```
+
+---
+# Horizontal Scaling Test Scenario
+### Description
+Simulate a high number of users using the system by sending many login and expense storage requests at the same time.
+
+1. 50+ users are registered and logged in.
+
+2. Each user receives a JWT token from the Authentication Service.
+
+3. Using the token, they send a POST /expense request to the Enter Data Service, which saves data into MySQL.
+
+### What it simulates
+- Multiple users using the system concurrently
+- Authentication traffic + expense submission
+- CPU and memory load on both:
+  - authentication pods
+  - enter-data-backend pods
+
+### Expected Outcome
+- HPA observes CPU or memory over the threshold (70% CPU, 75% memory).
+- It increases the number of pods for those services automatically (scaling out).
+- After the load stops, unused pods are scaled down again (shrink back to minReplicas)

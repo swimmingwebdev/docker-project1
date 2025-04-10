@@ -44,7 +44,7 @@ kubectl run -i --tty load-generator --image=busybox /bin/sh
 # while true; do wget -q -O- http://<your-service-name>:<port>; done
 while true; do wget -q -O- http://show-results-service:5002; done
 # Check status
-kubectl get hpa
+watch kubectl get hpa
 ```
 
 ### 6. Delete Cluster
@@ -82,3 +82,11 @@ Simulate a high number of users using the system by sending many login and expen
 - HPA observes CPU or memory over the threshold (70% CPU, 75% memory).
 - It increases the number of pods for those services automatically (scaling out).
 - After the load stops, unused pods are scaled down again (shrink back to minReplicas)
+
+```bash
+chmod +x test-scaling.sh
+# run script
+./test-scaling.sh
+# Monitor autoscaler
+watch kubectl get hpa
+```

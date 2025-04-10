@@ -3,6 +3,7 @@ kind: Service
 metadata:
   name: authentication-service
 spec:
+  type: LoadBalancer
   selector:
     app: authentication
   ports:
@@ -15,6 +16,7 @@ kind: Service
 metadata:
   name: enter-data-service
 spec:
+  type: LoadBalancer
   selector:
     app: enter-data-backend
   ports:
